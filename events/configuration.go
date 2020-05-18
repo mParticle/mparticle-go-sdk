@@ -43,7 +43,7 @@ type Configuration struct {
 // NewConfiguration returns a new Configuration object
 func NewConfiguration() *Configuration {
 	cfg := &Configuration{
-		BasePath:      "https://s2s.mparticle.com/v2",
+		BasePath:      "https://inbound.mparticle.com/s2s/v2",
 		DefaultHeader: make(map[string]string),
 		UserAgent:     "mParticle Go SDK/" + SDKVersion,
 	}
