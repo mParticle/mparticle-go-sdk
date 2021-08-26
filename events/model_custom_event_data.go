@@ -9,7 +9,7 @@ type CustomEventData struct {
 	SessionUUID                 string                       `json:"session_uuid,omitempty"`
 	SessionStartUnixtimeMS      int64                        `json:"session_start_unixtime_ms,omitempty"`
 	EventStartUnixtimeMS        int64                        `json:"event_start_unixtime_ms,omitempty"`
-	CustomAttributes            map[string]string            `json:"custom_attributes,omitempty"`
+	CustomAttributes            map[string]interface{}       `json:"custom_attributes,omitempty"`
 	Location                    *GeoLocation                 `json:"location,omitempty"`
 	DeviceCurrentState          *DeviceCurrentState          `json:"device_current_state,omitempty"`
 	IsGoalDefined               bool                         `json:"is_goal_defined,omitempty"`
