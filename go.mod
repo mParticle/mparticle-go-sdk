@@ -1,3 +1,3 @@
-module github.com/mParticle/mparticle-go-sdk/events
+module github.com/mParticle/mparticle-go-sdk
 
 go 1.16
