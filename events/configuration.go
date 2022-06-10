@@ -30,6 +30,10 @@ type BasicAuth struct {
 	APISecret string `json:"apiSecret,omitempty"`
 }
 
+type RequestDoer interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 // Configuration stores the configuration of the API client
 type Configuration struct {
 	BasePath      string            `json:"basePath,omitempty"`
@@ -37,7 +41,7 @@ type Configuration struct {
 	Scheme        string            `json:"scheme,omitempty"`
 	DefaultHeader map[string]string `json:"defaultHeader,omitempty"`
 	UserAgent     string            `json:"userAgent,omitempty"`
-	HTTPClient    *http.Client
+	HTTPClient    RequestDoer
 }
 
 // NewConfiguration returns a new Configuration object
