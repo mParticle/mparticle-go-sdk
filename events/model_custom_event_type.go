@@ -13,4 +13,6 @@ const (
 	UserPreferenceCustomEventType CustomEventType = "user_preference"
 	SocialCustomEventType         CustomEventType = "social"
 	MediaCustomEventType          CustomEventType = "media"
+	AttributionCustomEventType    CustomEventType = "attribution"
+        NavigationCustomEventType     CustomEventType = "navigation"
 )
