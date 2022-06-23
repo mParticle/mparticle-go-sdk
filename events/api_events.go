@@ -5,7 +5,12 @@ import (
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
+	_strconv "strconv"
+	_time "time"
 )
+
+var retryAfterTimestamp = _time.Now()
+var latestRetryErrorResponse *_nethttp.Response
 
 // Linger please
 var (
@@ -27,6 +32,20 @@ func (a *APIService) BulkUploadEvents(ctx _context.Context, batches []Batch) (*_
 		localVarFileName     string
 		localVarFileBytes    []byte
 	)
+
+	// Return cached response to honor "Retry-After" Header
+	if latestRetryErrorResponse != nil && retryAfterTimestamp.After(_time.Now()) {
+		localVarBody, err := _ioutil.ReadAll(latestRetryErrorResponse.Body)
+		latestRetryErrorResponse.Body.Close()
+		if err != nil {
+			return latestRetryErrorResponse, err
+		}
+		newErr := GenericError{
+			body:  localVarBody,
+			error: latestRetryErrorResponse.Status,
+		}
+		return latestRetryErrorResponse, newErr
+	}
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/bulkevents"
@@ -82,6 +101,15 @@ func (a *APIService) BulkUploadEvents(ctx _context.Context, batches []Batch) (*_
 			}
 			newErr.model = v
 			return localVarHTTPResponse, newErr
+		} else if localVarHTTPResponse.StatusCode == 429 {
+			if retryAfter, e := _strconv.ParseInt(localVarHTTPResponse.Header.Get("Retry-After"), 10, 32); e == nil {
+				retryAfterTimestamp = _time.Now().Add(_time.Duration(retryAfter))
+				latestRetryErrorResponse = localVarHTTPResponse
+			} else {
+				newErr.error = e.Error()
+				return localVarHTTPResponse, newErr
+			}
+			return localVarHTTPResponse, newErr
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -101,6 +129,20 @@ func (a *APIService) UploadEvents(ctx _context.Context, batch Batch) (*_nethttp.
 		localVarFileName     string
 		localVarFileBytes    []byte
 	)
+
+	// Return cached response to honor "Retry-After" Header
+	if latestRetryErrorResponse != nil && retryAfterTimestamp.After(_time.Now()) {
+		localVarBody, err := _ioutil.ReadAll(latestRetryErrorResponse.Body)
+		latestRetryErrorResponse.Body.Close()
+		if err != nil {
+			return latestRetryErrorResponse, err
+		}
+		newErr := GenericError{
+			body:  localVarBody,
+			error: latestRetryErrorResponse.Status,
+		}
+		return latestRetryErrorResponse, newErr
+	}
 
 	// create path and map variables
 	localVarPath := a.client.cfg.BasePath + "/events"
@@ -156,6 +198,15 @@ func (a *APIService) UploadEvents(ctx _context.Context, batch Batch) (*_nethttp.
 				return localVarHTTPResponse, newErr
 			}
 			newErr.model = v
+			return localVarHTTPResponse, newErr
+		} else if localVarHTTPResponse.StatusCode == 429 {
+			if retryAfter, e := _strconv.ParseInt(localVarHTTPResponse.Header.Get("Retry-After"), 10, 32); e == nil {
+				retryAfterTimestamp = _time.Now().Add(_time.Duration(retryAfter))
+				latestRetryErrorResponse = localVarHTTPResponse
+			} else {
+				newErr.error = e.Error()
+				return localVarHTTPResponse, newErr
+			}
 			return localVarHTTPResponse, newErr
 		}
 		return localVarHTTPResponse, newErr

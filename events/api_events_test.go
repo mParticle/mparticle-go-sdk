@@ -62,7 +62,7 @@ func TestFullBatch(t *testing.T) {
 	customEvent := NewCustomEvent()
 	customEvent.Data.EventName = "My Custom Event Name"
 	customEvent.Data.CustomEventType = OtherCustomEventType
-	customEvent.Data.CustomAttributes = make(map[string]string)
+	customEvent.Data.CustomAttributes = make(map[string]interface{})
 	customEvent.Data.CustomAttributes["foo"] = "bar"
 
 	screenEvent := NewScreenViewEvent()
